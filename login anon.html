@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Authentication Example</title>
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+  
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  
+  <!-- Codigo Inicial para conectarse a la BD de firebase-->
+  <!-- https://console.firebase.google.com/project/proyecto1firebase/overview -->
+  <!--Escoge la opcion "Añade Firebase a tu aplicacion" copia y pega el codigo a continuacion -->
+  <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  <script type="text/javascript">
+    // Initialize Firebase
+    var config = {
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      storageBucket: "",
+    };
+    firebase.initializeApp(config);
+  </script>
+
+  <script type="text/javascript">
+  
+    var user = null;
+    
+    function signIn() {
+      user = firebase.auth().currentUser;
+      if (!user) {
+        firebase.auth().signInAnonymously();
+        console.log("firebase.auth().signInAnonymously().");
+      } else {
+        console.log("Ya estas logueado como usuario anonimo con uid -> ", user.uid);
+      }
+    }
+
+    function signOut() {
+      user = firebase.auth().currentUser;
+      if (user) {
+        user.delete();
+        firebase.auth().signOut();
+        console.log("User ", user.uid, " ha salido y se ha elminado el registro en users Firebase Console.");
+      } else {
+        console.log("Estas intentado signOut de la aplicacion pero ni siquiera estas logueado.");
+      }
+    }
+
+    $(function() {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          $('#StatusLogin').text('Logueado').fadeOut(500).fadeIn(500);
+          $('#CurrentUser').text(uid).fadeOut(500).fadeIn(500);
+          console.log("User ", uid, " anonimo se ha logueado correctamente.");
+        } else {
+          $('#StatusLogin').text('Sin loguear').fadeOut(500).fadeIn(500);
+          $('#CurrentUser').text('-').fadeOut(500).fadeIn(500);
+          console.log("Usuario no esta logueado.");
+        }
+      });
+      $('#signIn').on('click', signIn);
+      $('#signOut').on('click', signOut);
+    });
+
+  </script>
+
+  <link rel="stylesheet" href="CSS/main.css">
+</head>
+<body>
+  <h2>Anonymous Authentication</h2>
+  <button id="signIn">Sign In</button>
+  <button id="signOut">Sign Out</button>
+  <br><br>
+  <div>Status: <span id="StatusLogin"></span></div>
+  <div>Current User: <span id="CurrentUser"></span></div>
+</body>
+</html>

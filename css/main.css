@@ -1,0 +1,14 @@
+body {
+	background-color: #CEECF5;
+	color: #3A2F0B;
+	font-family: 'Ubuntu';
+	font-size: .9em;
+}
+
+#CurrentUser {
+	color: #8A2908;
+}
+
+#StatusLogin {
+	color: #8A2908;
+}
